@@ -60,11 +60,10 @@ public class Main {
     private static void extract(Elements links) throws IOException {
 
         for (Element link : links) {
-            String url = link.attr("href");
+            String url = link.attr("href").trim();
 
-            if (url == null && url.trim().length() < 2) continue;
-
-            url = url.trim();
+            if (url.length() < 2) continue;
+            if (url.endsWith("pdf") || url.endsWith("jpg") || url.endsWith("png") || url.endsWith("zip") || url.endsWith("xml")) continue;
 
             // don't follow external links
             if (url.startsWith("http") && !url.contains(baseUrl)) {
@@ -107,10 +106,15 @@ public class Main {
             } else {
 
                 try {
-                    doc = Jsoup.connect(collectUrl).get();
-                } catch (HttpStatusException e) {
-                    // try again, this time with lowercase ... which is stupid, but this is a common error
-                    doc = Jsoup.connect(collectUrl.toLowerCase()).get();
+                    try {
+                        doc = Jsoup.connect(collectUrl).get();
+                    } catch (HttpStatusException e) {
+                        // try again, this time with lowercase ... which is stupid, but this is a common error
+                        doc = Jsoup.connect(collectUrl.toLowerCase()).get();
+                    }
+                } catch (org.jsoup.HttpStatusException e) {
+                    e.printStackTrace();
+                    continue;
                 }
 
             }
