@@ -120,9 +120,7 @@ public class Main {
             }
 
             if (!file.exists()) {
-
-                fileUrl = fileUrl + "/index.html";
-                FileUtils.write(new File(targetDir.getAbsolutePath() + "/" + fileUrl), doc.html(), UTF_8);
+                FileUtils.write(file, doc.html(), UTF_8);
             }
 
             System.out.println("ENTERING " + doc.title());
