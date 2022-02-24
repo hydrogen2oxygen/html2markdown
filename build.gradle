@@ -1,7 +1,7 @@
 plugins {
     id 'java'
 }
-
+def appClassName = "net.hydrogen2oxygen.html2markdown.Main"
 group 'net.hydrogen2oxygen'
 version '1.0-SNAPSHOT'
 
@@ -24,4 +24,33 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': "${appClassName}",
+                'Implementation-Version': project.version,
+                'Implementation-Title': 'Gradle Jar File Example'
+    }
+}
+
+task fatJar(type: Jar) {
+    println("# Creating fat jar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier = "all" //archiveBaseName.set(project.name + '-all')
+    manifest = jar.manifest
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.filter{ it.exists() }.findAll { it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
+    } with jar
+    println("# Fat jar created")
 }
