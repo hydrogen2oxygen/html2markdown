@@ -31,5 +31,5 @@ jobs:
         arguments: build
     - name: Extract Gradle project version
       #run: echo ::set-output name=version::$(./gradlew printVersion)
-      run: ./gradlew printVersion
+      run: gradle printVersion
       id: project
